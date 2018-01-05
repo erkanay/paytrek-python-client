@@ -6,7 +6,7 @@
 
 ## Usage
 
-    >>> from paytrek import Paytrek
+    >>> from paytrek.client import Paytrek
     >>> client = Paytrek('username', 'password', 'sandbox')
     >>> sale_params = {
             "amount": 1.9,

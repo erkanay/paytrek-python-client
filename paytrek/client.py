@@ -27,6 +27,20 @@ class Paytrek(object):
         }
         self.headers = {'Content-type': 'application/json'}
 
+    def _request(self, url, query={}):
+        """
+        Returns json response according to defined endpoint
+
+        :param url:
+        :param query:
+        :return:
+        """
+        response = requests.post(url=url, auth=self.basic_auth, json=query,
+                                 headers=self.headers, verify=False)
+        if not response.ok:
+            raise Exception(response.text)
+        return response.json()
+
     def sale(self, payload=None, sale_token=None):
         """
         Returns json response within sale result
@@ -56,12 +70,7 @@ class Paytrek(object):
         :param payload: https://sandbox.paytrek.com/docs/integration/chargeresource.html#list-of-parameters
         :return:
         """
-        response = requests.post(url=self.endpoints.get('charge'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('charge'), query=payload)
 
     def charge_with_token(self, sale_token, payment_token, dcc_currency=None, secure_charge=False):
         """
@@ -79,12 +88,7 @@ class Paytrek(object):
             'dcc_currency': dcc_currency,
             'secure_charge': secure_charge
         }
-        response = requests.post(url=self.endpoints.get('charge_with_token'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('charge_with_token'), query=payload)
 
     def fraudcheck(self, sale_token, payment_token):
         """
@@ -98,12 +102,7 @@ class Paytrek(object):
             'sale': '/api/v1/sale/{}/'.format(sale_token),
             'payment_token': payment_token,
         }
-        response = requests.post(url=self.endpoints.get('fraudcheck'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('fraudcheck'), query=payload)
 
     def capture(self, sale_token, comments=None):
         """
@@ -115,11 +114,7 @@ class Paytrek(object):
         """
         params = {'comments': comments}
         url = ''.join([self.endpoints.get('capture'), sale_token, '/'])
-        response = requests.get(url=url, headers=self.headers, json=params,
-                                auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(url, query=params)
 
     def refund(self, sale_token, amount=None, comments=None):
         """
@@ -135,11 +130,7 @@ class Paytrek(object):
             'comments': comments
         }
         url = ''.join([self.endpoints.get('refund'), sale_token, '/'])
-        response = requests.post(url=url, headers=self.headers, json=params,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(url, query=params)
 
     def tokenization(self, payload):
         """
@@ -149,12 +140,7 @@ class Paytrek(object):
         :param payload: https://sandbox.paytrek.com/docs/integration/tokenization.html#list-of-parameters
         :return:
         """
-        response = requests.post(url=self.endpoints.get('tokenization'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('tokenization'), query=payload)
 
     def vault(self, payload):
         """
@@ -164,12 +150,7 @@ class Paytrek(object):
         :param payload: https://sandbox.paytrek.com/docs/integration/vault.html#list-of-parameters
         :return:
         """
-        response = requests.post(url=self.endpoints.get('vault'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('vault'), query=payload)
 
     def options(self, payload):
         """
@@ -179,9 +160,4 @@ class Paytrek(object):
         :param payload: https://sandbox.paytrek.com/docs/integration/vault.html#list-of-parameters
         :return:
         """
-        response = requests.post(url=self.endpoints.get('options'),
-                                 json=payload, headers=self.headers,
-                                 auth=self.basic_auth, verify=False)
-        if not response.ok:
-            raise Exception(response.text)
-        return response.json()
+        return self._request(self.endpoints.get('options'), query=payload)
