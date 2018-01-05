@@ -2,7 +2,8 @@ from setuptools import setup
 
 setup(
     name='paytrek',
-    version='0.0.3',
+    packages=['paytrek'],
+    version='0.0.4',
     description='Python client library for Paytrek API',
     author='Erkan Ay',
     license='MIT',
